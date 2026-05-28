@@ -11,8 +11,7 @@ import type { ClothingItem, Outfit, Result } from '../models';
 export const WardrobeService = {
     // ── Items ──────────────────────────────────────────────────────
     async getItems(userId: string): Promise<Result<ClothingItem[]>> {
-        const { data, error } = await tables
-            .wardrobe()
+        const { data, error } = await (tables.wardrobe() as any)
             .select('*')
             .eq('user_id', userId)
             .order('created_at', { ascending: false });
@@ -24,7 +23,7 @@ export const WardrobeService = {
     async addItem(
         item: Omit<ClothingItem, 'id' | 'created_at' | 'times_worn' | 'last_worn'>
     ): Promise<Result<ClothingItem>> {
-        const { data, error } = await tables.wardrobe().insert(item).select().single();
+        const { data, error } = await (tables.wardrobe() as any).insert(item).select().single();
         if (error) return { success: false, error: error.message };
         return { success: true, data: data as ClothingItem };
     },
@@ -33,8 +32,7 @@ export const WardrobeService = {
         id: string,
         updates: Partial<ClothingItem>
     ): Promise<Result<ClothingItem>> {
-        const { data, error } = await tables
-            .wardrobe()
+        const { data, error } = await (tables.wardrobe() as any)
             .update(updates)
             .eq('id', id)
             .select()
@@ -45,13 +43,13 @@ export const WardrobeService = {
     },
 
     async deleteItem(id: string): Promise<Result<void>> {
-        const { error } = await tables.wardrobe().delete().eq('id', id);
+        const { error } = await (tables.wardrobe() as any).delete().eq('id', id);
         if (error) return { success: false, error: error.message };
         return { success: true, data: undefined };
     },
 
     async incrementTimesWorn(id: string): Promise<Result<void>> {
-        const { error } = await supabase.rpc('increment_times_worn', { item_id: id });
+        const { error } = await supabase.rpc('increment_times_worn' as any, { item_id: id } as any);
         if (error) return { success: false, error: error.message };
         return { success: true, data: undefined };
     },
@@ -78,8 +76,7 @@ export const WardrobeService = {
 
     // ── Outfits ───────────────────────────────────────────────────
     async getOutfits(userId: string): Promise<Result<Outfit[]>> {
-        const { data, error } = await tables
-            .outfits()
+        const { data, error } = await (tables.outfits() as any)
             .select(`*, outfit_items(*, wardrobe_items(*))`)
             .eq('user_id', userId)
             .order('created_at', { ascending: false });
@@ -93,8 +90,7 @@ export const WardrobeService = {
     ): Promise<Result<Outfit>> {
         const { items, ...outfitData } = outfit;
 
-        const { data: savedOutfit, error } = await tables
-            .outfits()
+        const { data: savedOutfit, error } = await (tables.outfits() as any)
             .insert(outfitData)
             .select()
             .single();
@@ -103,11 +99,11 @@ export const WardrobeService = {
 
         // Link items to outfit
         const outfitItems = items.map((item) => ({
-            outfit_id: savedOutfit.id,
+            outfit_id: (savedOutfit as any).id,
             wardrobe_item_id: item.id,
         }));
 
-        await supabase.from('outfit_items').insert(outfitItems);
+        await (tables.outfit_items() as any).insert(outfitItems);
         return { success: true, data: savedOutfit as unknown as Outfit };
     },
 };

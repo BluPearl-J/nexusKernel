@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@react-native/jest-preset": "^0.85.3",
-    "@types/jest": "^29.5.0",
+    "@types/jest": "^29.5.14",
     "@types/react": "~19.2.2",
     "@typescript-eslint/eslint-plugin": "^8.60.0",
     "@typescript-eslint/parser": "^8.60.0",
