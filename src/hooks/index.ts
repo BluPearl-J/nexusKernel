@@ -59,7 +59,13 @@ export function useWardrobe(userId: string) {
         setLoading(false);
     }, [userId]);
 
-    useEffect(() => { void fetchItems(); }, []);
+    // OPTIMIZED: Breaks the synchronous render cascade using a microtask timer
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            void fetchItems();
+        }, 0);
+        return () => clearTimeout(timer);
+    }, [fetchItems]);
 
     const addItem = useCallback(async (
         item: Omit<ClothingItem, 'id' | 'created_at' | 'times_worn' | 'last_worn'>
