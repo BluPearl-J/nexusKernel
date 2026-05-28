@@ -20,6 +20,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "824afebb-79f7-4174-bdd7-01de27eb4408"
+      }
+    },
+    "owner": "blupearl"
   }
 }
