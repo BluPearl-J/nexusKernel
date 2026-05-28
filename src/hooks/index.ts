@@ -59,7 +59,7 @@ export function useWardrobe(userId: string) {
         setLoading(false);
     }, [userId]);
 
-    useEffect(() => { fetchItems(); }, [fetchItems]);
+    useEffect(() => { void fetchItems(); }, []);
 
     const addItem = useCallback(async (
         item: Omit<ClothingItem, 'id' | 'created_at' | 'times_worn' | 'last_worn'>
