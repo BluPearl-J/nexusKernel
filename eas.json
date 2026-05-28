@@ -12,7 +12,6 @@
       "distribution": "internal"
     },
     "production": {
-      "platform": "android",
       "autoIncrement": true
     }
   },

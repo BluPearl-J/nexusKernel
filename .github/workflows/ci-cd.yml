@@ -63,9 +63,7 @@ jobs:
         with:
           eas-version: latest
           token: ${{ secrets.NEXUS }}
-      - run: eas build --profile production --platform all --non-interactive
-      - run: eas submit --platform ios --non-interactive
-        env:
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      # Build for Android only to bypass iOS code signing requirements
+      - run: eas build --profile production --platform android --non-interactive
+      # Submit Android only
       - run: eas submit --platform android --non-interactive
