@@ -62,7 +62,7 @@ jobs:
       - uses: expo/expo-github-action@v8
         with:
           eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
+          token: ${{ secrets.NEXUS }}
       - run: eas build --profile production --platform all --non-interactive
       - run: eas submit --platform ios --non-interactive
         env:
