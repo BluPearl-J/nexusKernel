@@ -84,5 +84,6 @@ jobs:
           tag_name: build-${{ github.run_id }}
           name: Build ${{ github.run_number }}
           files: WardrobeAssistant.apk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          draft: false
+          prerelease: false
