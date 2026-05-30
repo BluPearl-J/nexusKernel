@@ -46,7 +46,7 @@ jobs:
           name: coverage-report
           path: coverage/
 
-  # ── Job 3: Production Build + Submit to Stores ─────────────────
+  # ── Job 3: Production Build + GitHub Release ─────────────────
   build-production:
     name: EAS Production Build
     runs-on: ubuntu-latest
@@ -63,7 +63,25 @@ jobs:
         with:
           eas-version: latest
           token: ${{ secrets.NEXUS }}
-      # Build for Android only to bypass iOS code signing requirements
-      - run: eas build --profile production --platform android --non-interactive
-      # Submit Android only
-      - run: eas submit --platform android --non-interactive
+
+      # 1. Build and output build info to a file
+      - name: Build Android APK
+        run: eas build --platform android --non-interactive --profile production --json > build-info.json
+
+      # 2. Extract the URL (This requires jq which is pre-installed on ubuntu-latest)
+      - name: Get Build URL
+        id: get_url
+        run: echo "BUILD_URL=$(jq -r '.[0].artifacts.buildUrl' build-info.json)" >> $GITHUB_ENV
+
+      # 3. Download the APK (using curl)
+      - name: Download APK
+        run: curl -L $BUILD_URL -o WardrobeAssistant.apk
+
+      # 4. Create/Update the GitHub Release and attach the APK
+      - name: Release to GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v1.0.0
+          files: WardrobeAssistant.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
