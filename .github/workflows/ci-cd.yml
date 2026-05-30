@@ -76,12 +76,13 @@ jobs:
       # 3. Download the APK (using curl)
       - name: Download APK
         run: curl -L $BUILD_URL -o WardrobeAssistant.apk
-
-      # 4. Create/Update the GitHub Release and attach the APK
-      - name: Release to GitHub
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v1.0.0
-          files: WardrobeAssistant.apk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+          # 4. Create/Update the GitHub Release and attach the APK
+               - name: Release to GitHub
+               uses: softprops/action-gh-release@v1
+               with:
+                 tag_name: build-${{ github.run_id }}
+                 name: Build ${{ github.run_number }}
+                 files: WardrobeAssistant.apk
+               env:
+                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
