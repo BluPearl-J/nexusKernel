@@ -68,21 +68,21 @@ jobs:
       - name: Build Android APK
         run: eas build --platform android --non-interactive --profile production --json > build-info.json
 
-      # 2. Extract the URL (This requires jq which is pre-installed on ubuntu-latest)
+      # 2. Extract the URL
       - name: Get Build URL
         id: get_url
         run: echo "BUILD_URL=$(jq -r '.[0].artifacts.buildUrl' build-info.json)" >> $GITHUB_ENV
 
-      # 3. Download the APK (using curl)
+      # 3. Download the APK
       - name: Download APK
         run: curl -L $BUILD_URL -o WardrobeAssistant.apk
-          
-          # 4. Create/Update the GitHub Release and attach the APK
-               - name: Release to GitHub
-               uses: softprops/action-gh-release@v1
-               with:
-                 tag_name: build-${{ github.run_id }}
-                 name: Build ${{ github.run_number }}
-                 files: WardrobeAssistant.apk
-               env:
-                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 4. Create/Update the GitHub Release and attach the APK
+      - name: Release to GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: build-${{ github.run_id }}
+          name: Build ${{ github.run_number }}
+          files: WardrobeAssistant.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
